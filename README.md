@@ -55,10 +55,24 @@ $ kk get service
 NAME               TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
 kubernetes         ClusterIP   10.96.0.1      <none>        443/TCP        24m
 nginx-deployment   NodePort    10.103.49.97   <none>        80:32000/TCP   16m
+
+$ kk get ep
+NAME               ENDPOINTS                                   AGE
+kubernetes         172.18.0.3:6443                             30m
+nginx-deployment   10.244.1.2:80,10.244.1.3:80,10.244.1.4:80   22m
 ```
 ### Access nginx service
 
 Access http://localhost
+
+### Explanation
+
+* Export port 3200 in kind configuration, so your host's port 3200 will be redirected to kind worker's port 32000
+* use a service to expose your application (nginx), from port 32000 to deployment port 80 to 3 nginx pods.
+
+Now you are fine to access it from your host directly via http://localhost, the whole path would be
+
+localhost:80 -> kind worker (a container) port 32000) -> via service (nginx-deployment) -> deployment port 80 > three pods with selector app=nginx
 
 ### Reference
 
